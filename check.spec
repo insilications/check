@@ -4,7 +4,7 @@
 #
 Name     : check
 Version  : 0.10.0
-Release  : 11
+Release  : 12
 URL      : http://downloads.sourceforge.net/check/check-0.10.0.tar.gz
 Source0  : http://downloads.sourceforge.net/check/check-0.10.0.tar.gz
 Summary  : A unit test framework for C
