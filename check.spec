@@ -4,7 +4,7 @@
 #
 Name     : check
 Version  : 0.10.0
-Release  : 13
+Release  : 14
 URL      : http://downloads.sourceforge.net/check/check-0.10.0.tar.gz
 Source0  : http://downloads.sourceforge.net/check/check-0.10.0.tar.gz
 Summary  : A unit test framework for C
@@ -14,6 +14,11 @@ Requires: check-bin
 Requires: check-lib
 Requires: check-doc
 BuildRequires : cmake
+BuildRequires : gcc-dev32
+BuildRequires : gcc-libgcc32
+BuildRequires : gcc-libstdc++32
+BuildRequires : glibc-dev32
+BuildRequires : glibc-libc32
 BuildRequires : pkgconfig(check)
 BuildRequires : pkgconfig(libsubunit)
 BuildRequires : sed
@@ -41,9 +46,20 @@ Summary: dev components for the check package.
 Group: Development
 Requires: check-lib
 Requires: check-bin
+Provides: check-devel
 
 %description dev
 dev components for the check package.
+
+
+%package dev32
+Summary: dev32 components for the check package.
+Group: Default
+Requires: check-lib32
+Requires: check-bin
+
+%description dev32
+dev32 components for the check package.
 
 
 %package doc
@@ -62,14 +78,34 @@ Group: Libraries
 lib components for the check package.
 
 
+%package lib32
+Summary: lib32 components for the check package.
+Group: Default
+
+%description lib32
+lib32 components for the check package.
+
+
 %prep
 %setup -q -n check-0.10.0
+pushd ..
+cp -a check-0.10.0 build32
+popd
 
 %build
+export LANG=C
 %configure --disable-static
 make V=1  %{?_smp_mflags}
 
+pushd ../build32/
+export CFLAGS="$CFLAGS -m32"
+export CXXFLAGS="$CXXFLAGS -m32"
+export LDFLAGS="$LDFLAGS -m32"
+%configure --disable-static  --disable-subunit --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
+make V=1  %{?_smp_mflags}
+popd
 %check
+export LANG=C
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost
@@ -77,6 +113,15 @@ make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
 rm -rf %{buildroot}
+pushd ../build32/
+%make_install32
+if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
+then
+pushd %{buildroot}/usr/lib32/pkgconfig
+for i in *.pc ; do mv $i 32$i ; done
+popd
+fi
+popd
 %make_install
 
 %files
@@ -89,9 +134,14 @@ rm -rf %{buildroot}
 %files dev
 %defattr(-,root,root,-)
 /usr/include/*.h
-/usr/lib64/*.so
-/usr/lib64/pkgconfig/*.pc
+/usr/lib64/libcheck.so
+/usr/lib64/pkgconfig/check.pc
 /usr/share/aclocal/*.m4
+
+%files dev32
+%defattr(-,root,root,-)
+/usr/lib32/libcheck.so
+/usr/lib32/pkgconfig/32check.pc
 
 %files doc
 %defattr(-,root,root,-)
@@ -101,4 +151,10 @@ rm -rf %{buildroot}
 
 %files lib
 %defattr(-,root,root,-)
-/usr/lib64/*.so.*
+/usr/lib64/libcheck.so.0
+/usr/lib64/libcheck.so.0.0.0
+
+%files lib32
+%defattr(-,root,root,-)
+/usr/lib32/libcheck.so.0
+/usr/lib32/libcheck.so.0.0.0
