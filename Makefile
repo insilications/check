@@ -1,5 +1,5 @@
 PKG_NAME := check
-URL := http://downloads.sourceforge.net/check/check-0.10.0.tar.gz
+URL := https://github.com/libcheck/check/releases/download/0.11.0/check-0.11.0.tar.gz
 
 
 include ../common/Makefile.common
