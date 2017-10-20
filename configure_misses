@@ -1,0 +1,17 @@
+Configure miss: lcov
+Configure miss: genhtml
+Configure miss: filterdiff
+Configure miss: whether clock_gettime is declared
+Configure miss: whether gettimeofday is declared
+Configure miss: whether localtime_r is declared
+Configure miss: i686-generic-linux-gnu-objdump
+Configure miss: i686-generic-linux-gnu-dlltool
+Configure miss: i686-generic-linux-gnu-strip
+Configure miss: i686-generic-linux-gnu-mt
+Configure miss: lcov
+Configure miss: genhtml
+Configure miss: filterdiff
+Configure miss: i686-generic-linux-gnu-pkg-config
+Configure miss: whether clock_gettime is declared
+Configure miss: whether gettimeofday is declared
+Configure miss: whether localtime_r is declared
