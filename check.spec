@@ -4,7 +4,7 @@
 #
 Name     : check
 Version  : 0.12.0
-Release  : 20
+Release  : 21
 URL      : https://github.com/libcheck/check/releases/download/0.12.0/check-0.12.0.tar.gz
 Source0  : https://github.com/libcheck/check/releases/download/0.12.0/check-0.12.0.tar.gz
 Summary  : A unit test framework for C
