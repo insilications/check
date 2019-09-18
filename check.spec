@@ -4,21 +4,23 @@
 #
 Name     : check
 Version  : 0.12.0
-Release  : 21
+Release  : 22
 URL      : https://github.com/libcheck/check/releases/download/0.12.0/check-0.12.0.tar.gz
 Source0  : https://github.com/libcheck/check/releases/download/0.12.0/check-0.12.0.tar.gz
 Summary  : A unit test framework for C
 Group    : Development/Tools
 License  : BSD-3-Clause LGPL-2.0+ LGPL-2.1
-Requires: check-bin
-Requires: check-lib
-Requires: check-doc
-BuildRequires : cmake
+Requires: check-bin = %{version}-%{release}
+Requires: check-lib = %{version}-%{release}
+Requires: check-license = %{version}-%{release}
+Requires: check-man = %{version}-%{release}
+BuildRequires : buildreq-cmake
 BuildRequires : gcc-dev32
 BuildRequires : gcc-libgcc32
 BuildRequires : gcc-libstdc++32
 BuildRequires : glibc-dev32
 BuildRequires : glibc-libc32
+BuildRequires : pkg-config
 BuildRequires : pkgconfig(check)
 BuildRequires : pkgconfig(libsubunit)
 BuildRequires : sed
@@ -35,6 +37,7 @@ source code editors and IDEs.
 %package bin
 Summary: bin components for the check package.
 Group: Binaries
+Requires: check-license = %{version}-%{release}
 
 %description bin
 bin components for the check package.
@@ -43,9 +46,10 @@ bin components for the check package.
 %package dev
 Summary: dev components for the check package.
 Group: Development
-Requires: check-lib
-Requires: check-bin
-Provides: check-devel
+Requires: check-lib = %{version}-%{release}
+Requires: check-bin = %{version}-%{release}
+Provides: check-devel = %{version}-%{release}
+Requires: check = %{version}-%{release}
 
 %description dev
 dev components for the check package.
@@ -54,9 +58,9 @@ dev components for the check package.
 %package dev32
 Summary: dev32 components for the check package.
 Group: Default
-Requires: check-lib32
-Requires: check-bin
-Requires: check-dev
+Requires: check-lib32 = %{version}-%{release}
+Requires: check-bin = %{version}-%{release}
+Requires: check-dev = %{version}-%{release}
 
 %description dev32
 dev32 components for the check package.
@@ -65,6 +69,7 @@ dev32 components for the check package.
 %package doc
 Summary: doc components for the check package.
 Group: Documentation
+Requires: check-man = %{version}-%{release}
 
 %description doc
 doc components for the check package.
@@ -73,6 +78,7 @@ doc components for the check package.
 %package lib
 Summary: lib components for the check package.
 Group: Libraries
+Requires: check-license = %{version}-%{release}
 
 %description lib
 lib components for the check package.
@@ -81,9 +87,26 @@ lib components for the check package.
 %package lib32
 Summary: lib32 components for the check package.
 Group: Default
+Requires: check-license = %{version}-%{release}
 
 %description lib32
 lib32 components for the check package.
+
+
+%package license
+Summary: license components for the check package.
+Group: Default
+
+%description license
+license components for the check package.
+
+
+%package man
+Summary: man components for the check package.
+Group: Default
+
+%description man
+man components for the check package.
 
 
 %prep
@@ -96,29 +119,43 @@ popd
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1508515327
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1568831139
+export GCC_IGNORE_WERROR=1
+export AR=gcc-ar
+export RANLIB=gcc-ranlib
+export NM=gcc-nm
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FCFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 %configure --disable-static
-make V=1  %{?_smp_mflags}
+make  %{?_smp_mflags}
 
 pushd ../build32/
 export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
-export CFLAGS="$CFLAGS -m32"
-export CXXFLAGS="$CXXFLAGS -m32"
-export LDFLAGS="$LDFLAGS -m32"
+export ASFLAGS="${ASFLAGS}${ASFLAGS:+ }--32"
+export CFLAGS="${CFLAGS}${CFLAGS:+ }-m32 -mstackrealign"
+export CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-m32 -mstackrealign"
+export LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-m32 -mstackrealign"
 %configure --disable-static  --disable-subunit  --libdir=/usr/lib32 --build=i686-generic-linux-gnu --host=i686-generic-linux-gnu --target=i686-clr-linux-gnu
-make V=1  %{?_smp_mflags}
+make  %{?_smp_mflags}
 popd
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
+cd ../build32;
+make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1508515327
+export SOURCE_DATE_EPOCH=1568831139
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/package-licenses/check
+cp COPYING.LESSER %{buildroot}/usr/share/package-licenses/check/COPYING.LESSER
+cp doc/example/cmake/COPYING-CMAKE-SCRIPTS.txt %{buildroot}/usr/share/package-licenses/check/doc_example_cmake_COPYING-CMAKE-SCRIPTS.txt
 pushd ../build32/
 %make_install32
 if [ -d  %{buildroot}/usr/lib32/pkgconfig ]
@@ -139,7 +176,8 @@ popd
 
 %files dev
 %defattr(-,root,root,-)
-/usr/include/*.h
+/usr/include/check.h
+/usr/include/check_stdint.h
 /usr/lib64/libcheck.so
 /usr/lib64/pkgconfig/check.pc
 /usr/share/aclocal/*.m4
@@ -151,10 +189,9 @@ popd
 /usr/lib32/pkgconfig/check.pc
 
 %files doc
-%defattr(-,root,root,-)
+%defattr(0644,root,root,0755)
 %doc /usr/share/doc/check/*
 %doc /usr/share/info/*
-%doc /usr/share/man/man1/*
 
 %files lib
 %defattr(-,root,root,-)
@@ -165,3 +202,12 @@ popd
 %defattr(-,root,root,-)
 /usr/lib32/libcheck.so.0
 /usr/lib32/libcheck.so.0.0.0
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/check/COPYING.LESSER
+/usr/share/package-licenses/check/doc_example_cmake_COPYING-CMAKE-SCRIPTS.txt
+
+%files man
+%defattr(0644,root,root,0755)
+/usr/share/man/man1/checkmk.1
