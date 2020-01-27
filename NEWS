@@ -1,3 +1,19 @@
+Sun Jan 26, 2020: Released Check 0.14.0
+  based on hash 0076ec62f71d33b5b54530f8471b4c99f50638d7
+
+* Add support for FetchContent in CMake
+  Issue #238
+
+* Rename CMake project from 'check' to 'Check'
+  Issue #232
+
+* Fix for checking for wrong tool when building docs in Autotools
+  Issue #231
+
+* Fix compiler warning with printf format
+  Issue #233 
+
+
 Sat Oct 20, 2019: Released Check 0.13.0
   based on hash 2b18886a9a9d3bab44917a550d12128ad7e2c197
 
@@ -7,7 +23,7 @@ Sat Oct 20, 2019: Released Check 0.13.0
 * missing <unistd.h> in some files
   Issue #196 and Issue #186 (GitHub)
 
-* Varous documentation improvements
+* Various documentation improvements
 
 * END_TEST is now optional, as how START_TEST works has been redone
   Issue #158
