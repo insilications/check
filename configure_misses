@@ -1,6 +1,5 @@
 Configure miss: lcov
 Configure miss: genhtml
-Configure miss: filterdiff
 Configure miss: InitOnceBeginInitialize
 Configure miss: InitOnceComplete
 Configure miss: whether clock_gettime is declared
@@ -8,7 +7,6 @@ Configure miss: whether gettimeofday is declared
 Configure miss: whether localtime_r is declared
 Configure miss: lcov
 Configure miss: genhtml
-Configure miss: filterdiff
 Configure miss: InitOnceBeginInitialize
 Configure miss: InitOnceComplete
 Configure miss: whether clock_gettime is declared
