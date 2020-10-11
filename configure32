@@ -1,1 +1,1 @@
---disable-subunit
+--disable-subunit --disable-static --enable-shared --disable-build-docs
