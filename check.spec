@@ -5,9 +5,9 @@
 %define keepstatic 1
 Name     : check
 Version  : 0.15.2
-Release  : 28
-URL      : https://github.com/libcheck/check/archive/0.15.2.tar.gz
-Source0  : https://github.com/libcheck/check/archive/0.15.2.tar.gz
+Release  : 29
+URL      : file:///insilications/build/clearlinux/packages/check/check-0.15.2.tar.gz
+Source0  : file:///insilications/build/clearlinux/packages/check/check-0.15.2.tar.gz
 Summary  : A unit test framework for C
 Group    : Development/Tools
 License  : GPL-2.0 LGPL-2.0+ LGPL-2.1
@@ -26,6 +26,8 @@ BuildRequires : pkg-config
 BuildRequires : pkgconfig(check)
 BuildRequires : pkgconfig(libsubunit)
 BuildRequires : sed
+BuildRequires : subunit-dev
+BuildRequires : subunit-staticdev
 BuildRequires : texinfo
 
 %description
@@ -107,10 +109,10 @@ staticdev components for the check package.
 
 
 %prep
-%setup -q -n check-0.15.2
-cd %{_builddir}/check-0.15.2
+%setup -q -n check
+cd %{_builddir}/check
 pushd ..
-cp -a check-0.15.2 build32
+cp -a check build32
 popd
 
 %build
@@ -119,7 +121,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1602441961
+export SOURCE_DATE_EPOCH=1602442729
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -177,7 +179,7 @@ make  %{?_smp_mflags}
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1602441961
+export SOURCE_DATE_EPOCH=1602442729
 rm -rf %{buildroot}
 pushd ../build32/
 %make_install32

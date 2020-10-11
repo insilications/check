@@ -2,3 +2,16 @@
 # picked up automatically. One name per line, no whitespace.
 # To support reproducible builds:
 patchutils
+buildreq-cmake
+gcc-dev32
+gcc-libgcc32
+gcc-libstdc++32
+glibc-dev32
+glibc-libc32
+graphviz
+patchutils
+pkg-config
+sed
+texinfo
+subunit-dev
+subunit-staticdev
